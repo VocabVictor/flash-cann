@@ -1,0 +1,93 @@
+# CANN specific
+*.ncu-rep
+*.om
+*.json
+profiling/
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.cproject
+.settings/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyTorch
+*.pth
+*.pt
+checkpoint/
+checkpoints/
+logs/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# CANN build artifacts
+*.o
+*.a
+*.so.*
+*.out
+*.log
+
+# MindStudio
+.mindstudio/
+
+# Profiling and benchmark results
+*.csv
+benchmark_results/
+profiling_data/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
