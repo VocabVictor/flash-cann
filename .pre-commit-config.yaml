@@ -1,0 +1,44 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
+    hooks:
+      # 代码检查：语法错误、未使用的导入、代码风格等
+      - id: ruff-check
+        args: [--fix, --exit-non-zero-on-fix]
+        files: ^python/.*\.py$
+
+      # 代码格式化：统一代码风格
+      - id: ruff-format
+        files: ^(python|tests)/.*\.py$
+
+  # 通用预提交钩子
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # 检查文件末尾是否有换行符
+      - id: end-of-file-fixer
+
+      # 移除行尾多余空格
+      - id: trailing-whitespace
+
+      # 检查 YAML 文件语法
+      - id: check-yaml
+
+      # 检查是否有未解决的 merge 冲突标记
+      - id: check-merge-conflict
+
+      # 检查是否有大文件（超过 500KB）
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+
+      # 检查 Python 代码语法错误
+      - id: check-ast
+        files: \.py$
+
+  # C/C++ 代码格式化（可选，针对 CANN kernel）
+  # - repo: https://github.com/pre-commit/mirrors-clang-format
+  #   rev: v19.1.5
+  #   hooks:
+  #     - id: clang-format
+  #       files: \.(c|cc|cpp|h|hpp)$
+  #       args: ['-style=Google']
