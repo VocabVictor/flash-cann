@@ -7,45 +7,12 @@ import torch.nn as nn
 import os
 
 # isort: off
-# We need to import the backend after importing torch
-
-# Backend selection: CUDA (NVIDIA), Triton (AMD), CANN (Ascend NPU), or Reference (PyTorch)
+# We need to import the CUDA kernels after importing torch
 USE_TRITON_ROCM = os.getenv("FLASH_ATTENTION_TRITON_AMD_ENABLE", "FALSE") == "TRUE"
-USE_CANN = False
-USE_REFERENCE = False
-flash_attn_gpu = None
-
-# Try CANN backend for Ascend NPU
-try:
-    import torch_npu
-    # If torch_npu is available, try CANN backend
-    try:
-        import flash_attn_cann as flash_attn_gpu
-        USE_CANN = True
-        print("[Flash-Attention] Using CANN backend for Ascend NPU")
-    except ImportError:
-        pass
-except ImportError:
-    pass
-
-# Try Triton backend for AMD
-if not USE_CANN and USE_TRITON_ROCM:
-    try:
-        from .flash_attn_triton_amd import interface_fa as flash_attn_gpu
-        print("[Flash-Attention] Using Triton backend for AMD GPU")
-    except ImportError:
-        USE_TRITON_ROCM = False
-
-# Try CUDA backend for NVIDIA
-if not USE_CANN and not USE_TRITON_ROCM:
-    try:
-        import flash_attn_2_cuda as flash_attn_gpu
-        print("[Flash-Attention] Using CUDA backend for NVIDIA GPU")
-    except ImportError:
-        # Fallback to reference implementation
-        USE_REFERENCE = True
-        print("[Flash-Attention] No GPU backend available, using reference PyTorch implementation (slow)")
-        print("[Flash-Attention] Install flash-attn-2-cuda (NVIDIA), flash-attn-triton-amd (AMD), or flash-attn-cann (Ascend) for better performance")
+if USE_TRITON_ROCM:
+    from .flash_attn_triton_amd import interface_fa as flash_attn_gpu
+else:
+    import flash_attn_2_cuda as flash_attn_gpu
 
 # isort: on
 
