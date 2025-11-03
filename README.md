@@ -1,12 +1,18 @@
 # Flash-CANN
 
-Flash-Attention implementation for Huawei Ascend NPU using CANN (Compute Architecture for Neural Networks).
+Flash-Attention with multi-backend support: CUDA (NVIDIA), ROCm/Triton (AMD), and **CANN (Huawei Ascend NPU)**.
 
-将 Flash-Attention 算法移植到华为昇腾 NPU 平台，使用 CANN 异构计算架构实现。
+将 Flash-Attention 算法扩展到华为昇腾 NPU 平台，使用 CANN 异构计算架构实现，同时保持与原始 flash-attention 的完全兼容。
 
 ## 项目简介 (Project Overview)
 
-Flash-CANN 是 [Flash-Attention](https://github.com/Dao-AILab/flash-attention) 在华为昇腾 NPU 上的实现。Flash-Attention 是一种快速且内存高效的精确注意力算法，通过 IO 感知优化和分块计算技术，实现了：
+Flash-CANN 为 [Flash-Attention](https://github.com/Dao-AILab/flash-attention) 添加华为昇腾 NPU 支持。本项目作为 flash-attention 的扩展，支持多个后端：
+
+- **CUDA**: NVIDIA GPUs (原始 flash-attention 支持)
+- **ROCm/Triton**: AMD GPUs (原始 flash-attention 支持)
+- **CANN**: Huawei Ascend NPUs ⭐ (本项目添加)
+
+Flash-Attention 是一种快速且内存高效的精确注意力算法，通过 IO 感知优化和分块计算技术，实现了：
 
 - ⚡ **2-4倍速度提升**：相比标准 Attention
 - 💾 **O(N) 空间复杂度**：从 O(N²) 降低到 O(N)
@@ -65,16 +71,55 @@ flash-cann/
 ## 构建与安装 (Build & Installation)
 
 ```bash
-# 待实现
-# TBD
+# 克隆仓库
+git clone https://github.com/VocabVictor/flash-cann.git
+cd flash-cann
+
+# 安装 (开发模式)
+pip install -e .
+```
+
+### 后端选择 (Backend Selection)
+
+包会根据硬件自动选择合适的后端：
+
+1. **Ascend NPU**: 如果检测到 `torch_npu`，使用 CANN 后端
+2. **AMD GPU**: 设置 `FLASH_ATTENTION_TRITON_AMD_ENABLE=TRUE` 使用 Triton 后端
+3. **NVIDIA GPU**: 默认使用 CUDA 后端
+4. **Fallback**: 使用纯 PyTorch 参考实现（慢但兼容）
+
+也可以通过环境变量强制指定：
+
+```bash
+# 强制使用 CANN 后端
+export FLASH_ATTENTION_BACKEND=CANN
+
+# 强制使用参考实现（用于测试）
+export FLASH_ATTENTION_BACKEND=REFERENCE
 ```
 
 ## 使用示例 (Usage)
 
 ```python
-# 待实现
-# TBD
+import torch
+from flash_attn import flash_attn_func
+
+# 准备输入
+batch_size, seqlen, nheads, headdim = 2, 512, 8, 64
+q = torch.randn(batch_size, seqlen, nheads, headdim)
+k = torch.randn(batch_size, seqlen, nheads, headdim)
+v = torch.randn(batch_size, seqlen, nheads, headdim)
+
+# 调用 flash attention（自动选择后端）
+out = flash_attn_func(q, k, v, causal=True)
+
+print(f"Output shape: {out.shape}")  # (2, 512, 8, 64)
 ```
+
+**完全兼容原始 flash-attention API**：
+- 代码无需修改
+- 自动根据硬件选择后端
+- 在 NVIDIA GPU 上使用 CUDA，在 Ascend NPU 上使用 CANN
 
 ## 技术挑战 (Technical Challenges)
 
