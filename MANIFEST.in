@@ -1,0 +1,16 @@
+include README.md
+include LICENSE
+include AUTHORS
+include requirements.txt
+
+recursive-include csrc *.cc
+recursive-include csrc *.cpp
+recursive-include csrc *.h
+recursive-include csrc *.hpp
+
+recursive-include python *.py
+
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude *.so
+global-exclude *.o
