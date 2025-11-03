@@ -1,0 +1,11 @@
+# Core dependencies
+numpy>=1.21.0
+torch>=2.0.0
+
+# CANN dependencies (these would be installed separately via CANN toolkit)
+# torch-npu  # Ascend NPU extension for PyTorch (install from Huawei)
+
+# Optional: for development
+# pytest>=7.0.0
+# black>=23.0.0
+# ruff>=0.1.0
