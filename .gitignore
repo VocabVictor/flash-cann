@@ -91,3 +91,6 @@ profiling_data/
 tmp/
 temp/
 *.tmp
+
+# Unused directories
+python/
